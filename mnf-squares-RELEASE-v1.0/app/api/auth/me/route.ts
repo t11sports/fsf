@@ -1,0 +1,1 @@
+import { NextResponse } from 'next/server'; import { parseCookies, verifySessionToken } from '@/app/lib/auth'; export async function GET(req: Request){ const c=parseCookies(req.headers.get('cookie')); const role=c['role']|| (verifySessionToken(c['session'])?.role || 'VIEWER'); return NextResponse.json({ role }); }

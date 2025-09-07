@@ -1,0 +1,1 @@
+import { NextResponse } from 'next/server'; import { metrics } from '@/app/lib/metrics'; export async function GET(){ return new NextResponse(metrics.dump(), { headers: {'Content-Type':'text/plain'} }); }
