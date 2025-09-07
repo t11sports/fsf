@@ -1,1 +1,0 @@
-export const logger = { info: console.log, error: console.error }; export function ensureRequestId(){ return 'req-'+Math.random().toString(36).slice(2);}

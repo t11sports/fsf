@@ -1,8 +1,0 @@
-{
-  "version": 2,
-  "buildCommand": "npm ci && npx prisma generate && npm run build",
-  "env": {
-    "APP_JWT_SECRET": "@app-jwt-secret",
-    "SQUARE_PRICE_CENTS": "2000"
-  }
-}
