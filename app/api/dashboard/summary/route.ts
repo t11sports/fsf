@@ -1,3 +1,33 @@
+import { NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client';
 
-import { NextResponse } from "next/server"; import { PrismaClient } from "@prisma/client"; const prisma = new PrismaClient();
-export async function GET(req: Request){ const games = await prisma.game.findMany({ include: { boards: true } }); const [playersCount, buyersCount, sales, allWinners] = await Promise.all([ prisma.player.count(), prisma.buyer.count(), prisma.sale.findMany(), prisma.winner.findMany() ]); const totalDue = sales.reduce((s, x) => s + (x.due || 0), 0); const totalReceived = sales.reduce((s, x) => s + (x.received || 0), 0); const totalBalance = sales.reduce((s, x) => s + (x.balance || 0), 0); const winnersPayout = allWinners.reduce((s, w) => s + (w.payout || 0), 0); const perGame = games.map(g=>({ id:g.id, week:g.week, date:g.date, homeTeam:g.homeTeam, awayTeam:g.awayTeam, boardTotals:{1:0,2:0}, winners:0 })); return NextResponse.json({ kpis: { players: playersCount, buyers: buyersCount, totalDue, totalReceived, totalBalance, games: games.length, winnersTotal: allWinners.length, winnersPayout }, perGame }); }
+const prisma = new PrismaClient();
+
+export async function GET() {
+  try {
+    const [playersCount, buyersCount, gamesCount, sales] = await Promise.all([
+      prisma.player.count(),
+      prisma.buyer.count(),
+      prisma.game.count(),
+      prisma.sale.findMany(),
+    ]);
+
+    const totalDue = sales.reduce((sum, sale) => sum + sale.due, 0);
+    const totalReceived = sales.reduce((sum, sale) => sum + sale.received, 0);
+    const totalBalance = sales.reduce((sum, sale) => sum + sale.balance, 0);
+
+    const kpis = {
+      Players: playersCount,
+      Buyers: buyersCount,
+      Games: gamesCount,
+      'Total Due ($)': totalDue,
+      'Total Received ($)': totalReceived,
+      'Total Balance ($)': totalBalance,
+    };
+
+    return NextResponse.json({ kpis });
+  } catch (error) {
+    console.error('Summary API Error:', error);
+    return new NextResponse('Internal Server Error', { status: 500 });
+  }
+}
