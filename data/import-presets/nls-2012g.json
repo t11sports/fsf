@@ -1,0 +1,15 @@
+{
+  "name": "NLS 2012G \u2014 Buyers & Sales",
+  "mapping": {
+    "sales": {
+      "buyerName": "Buyer",
+      "qty": "Qty",
+      "due": "Due",
+      "received": "Received"
+    },
+    "buyers": {
+      "phone": "Phone",
+      "email": "Email"
+    }
+  }
+}
