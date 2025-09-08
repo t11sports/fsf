@@ -1,0 +1,78 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Player {
+  id           String   @id @default(uuid())
+  name         String
+  jerseyNumber Int?
+  email        String?
+  winners      Winner[]
+  createdAt    DateTime @default(now())
+}
+
+model Buyer {
+  id        String  @id @default(uuid())
+  name      String
+  facebook  Boolean?
+  sales     Sale[]
+  createdAt DateTime @default(now())
+}
+
+model Sale {
+  id        String   @id @default(uuid())
+  buyerId   String
+  buyer     Buyer    @relation(fields: [buyerId], references: [id])
+  qty       Int
+  due       Float
+  received  Float
+  balance   Float
+  createdAt DateTime @default(now())
+}
+
+model Game {
+  id       String  @id @default(uuid())
+  week     Int
+  date     DateTime
+  homeTeam String
+  awayTeam String
+  winners  Winner[]
+  boards   Board[]
+  scores   Score[]
+}
+
+model Board {
+  id          String @id @default(uuid())
+  gameId      String
+  game        Game   @relation(fields: [gameId], references: [id])
+  boardNumber Int
+  squares     Json   // digits + assignments
+}
+
+model Winner {
+  id       String  @id @default(uuid())
+  gameId   String
+  game     Game    @relation(fields: [gameId], references: [id])
+  quarter  String
+  square   String
+  payout   Float
+  playerId String?
+  player   Player? @relation(fields: [playerId], references: [id])
+}
+
+model Score {
+  id        String   @id @default(uuid())
+  gameId    String
+  game      Game     @relation(fields: [gameId], references: [id])
+  quarter   String   // "Q1" | "Q2" | "Q3" | "Q4" | "OT"
+  homeScore Int
+  awayScore Int
+  updatedAt DateTime @default(now())
+
+  @@unique([gameId, quarter], name: "gameId_quarter")  // ← one score per quarter per game
+}
