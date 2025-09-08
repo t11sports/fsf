@@ -1,9 +1,8 @@
 'use client';
-
 import { useEffect, useState } from 'react';
 
 export default function DashboardPage() {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<Record<string, unknown> | null>(null);
 
   useEffect(() => {
     fetch('/api/dashboard/summary')
@@ -19,7 +18,11 @@ export default function DashboardPage() {
           <div key={k} className="p-3 border rounded bg-white">
             <div className="text-xs opacity-70">{k}</div>
             <div className="text-xl font-bold">
-              {typeof v === 'number' ? (v.toFixed ? v.toFixed(2) : v) : v}
+              {typeof v === 'number'
+                ? v.toFixed?.(2)
+                : typeof v === 'string'
+                ? v
+                : JSON.stringify(v)}
             </div>
           </div>
         ))}
