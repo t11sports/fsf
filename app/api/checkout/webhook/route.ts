@@ -1,0 +1,6 @@
+
+import { NextResponse } from "next/server"; import Stripe from "stripe"; import { PrismaClient } from "@prisma/client"; const prisma = new PrismaClient(); export const runtime="nodejs";
+export async function POST(req: Request){ const sig=req.headers.get("stripe-signature")||""; const secret=process.env.STRIPE_WEBHOOK_SECRET||""; const buf=await req.text(); let event: Stripe.Event; try { const stripe=new Stripe(process.env.STRIPE_SECRET_KEY||"", { apiVersion:'2024-06-20' } as any); event=stripe.webhooks.constructEvent(buf, sig, secret); } catch (err:any){ return NextResponse.json({ error:`Webhook signature verification failed: ${err.message}`}, { status: 400 }); }
+  if (event.type==='checkout.session.completed'){ const s = event.data.object as Stripe.Checkout.Session; const qty=(s.amount_total||0)/(parseInt(process.env.SQUARE_PRICE_CENTS||'1000',10)); const buyerName=(s.metadata as any)?.buyerName || 'Online Buyer'; const email = s.customer_email || null; const buyer = await prisma.buyer.upsert({ where:{ name: buyerName }, update:{ email }, create:{ name: buyerName, email } }); const due=(s.amount_total||0)/100; await prisma.sale.create({ data:{ buyerId: buyer.id, qty: Number(qty||1), due, received: due, balance: 0, note: email?`Email: ${email}`: null } }); }
+  return NextResponse.json({ received: true });
+}
