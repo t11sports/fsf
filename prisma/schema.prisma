@@ -24,7 +24,7 @@ model User {
 
 model Player {
   id           String   @id @default(uuid())
-  name         String
+  name         String   @unique
   jerseyNumber Int?
   email        String?
   winners      Winner[]
@@ -34,7 +34,7 @@ model Player {
 
 model Buyer {
   id        String   @id @default(uuid())
-  name      String
+  name      String   @unique
   email     String?
   phone     String?
   facebook  Boolean?
