@@ -3,7 +3,7 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 ENV SKIP_ENV_VALIDATION=1
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 COPY . .
 # Generate Prisma client and build Next app
 RUN npx prisma generate
