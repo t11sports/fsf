@@ -1,0 +1,9 @@
+
+'use client';
+import { useState, useEffect } from 'react';
+export default function BuyPage({ params }:{ params:{ gameId:string; boardNumber:string } }){
+  const [buyerName, setBuyerName] = useState(''); const [buyerEmail, setBuyerEmail]=useState(''); const [qty,setQty]=useState(1); const [loading,setLoading]=useState(false); const [error,setError]=useState<string|null>(null);
+  async function startCheckout(){ try{ setLoading(true); setError(null); const res=await fetch('/api/checkout/session',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ buyerName, buyerEmail, qty, gameId: params.gameId, boardNumber: Number(params.boardNumber) }) }); const j=await res.json(); if(!res.ok) throw new Error(j?.error||'Failed'); window.location.href=j.url; } catch(e:any){ setError(e.message);} finally{ setLoading(false);} }
+  const pageUrl = typeof window!=='undefined'? window.location.href: '';
+  return (<div className="max-w-xl space-y-4"><h1 className="text-2xl font-bold">Buy Squares – Game {params.gameId} · Board {params.boardNumber}</h1><div className="grid gap-3"><input className="border p-2 rounded" placeholder="Your name" value={buyerName} onChange={e=>setBuyerName(e.target.value)} /><input className="border p-2 rounded" placeholder="Email (receipt)" value={buyerEmail} onChange={e=>setBuyerEmail(e.target.value)} /><input className="border p-2 rounded" type="number" min={1} max={10} value={qty} onChange={e=>setQty(parseInt(e.target.value||'1',10))} /><button onClick={startCheckout} disabled={loading} className="px-4 py-2 bg-blue-600 text-white rounded">{loading?'Redirecting...':'Checkout with Stripe'}</button>{error && <div className="text-red-600 text-sm">{error}</div>}</div><div className="mt-4"><p className="text-sm mb-2 opacity-70">Share this page (QR):</p><img className="border rounded" src={`/api/qr?text=${encodeURIComponent(pageUrl)}`} alt="QR" /></div></div>);
+}
