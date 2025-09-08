@@ -9,14 +9,14 @@ ENV SKIP_ENV_VALIDATION=1
 COPY package*.json ./
 RUN npm install
 
-# ✅ Copy app source including prisma folder BEFORE generating
-COPY . .
-
-# ✅ Now Prisma can find the schema
-RUN npx prisma generate
+# Copy Prisma schema
+COPY prisma ./prisma
 
 # Now copy the rest of the app and build
 COPY . .
+
+# Generate Prisma client and build Next app
+RUN npx prisma generate --schema=prisma/schema.prisma
 RUN npm run build
 
 # ---- Runner ----
