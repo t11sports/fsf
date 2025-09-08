@@ -1,0 +1,41 @@
+{
+  "name": "mnf-squares-ultimate",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "postinstall": "prisma generate",
+    "vercel:build": "prisma migrate deploy && prisma generate && next build"
+  },
+  "dependencies": {
+    "next": "14.2.4",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "swr": "2.2.5",
+    "@prisma/client": "5.16.2",
+    "prisma": "5.16.2",
+    "pino": "^9.3.2",
+    "pino-pretty": "^11.2.2",
+    "xlsx": "^0.18.5",
+    "stripe": "^14.25.0",
+    "qrcode": "^1.5.4",
+    "nodemailer": "^6.9.14",
+    "twilio": "^5.3.3",
+    "zod": "^3.23.8",
+    "papaparse": "^5.4.1",
+    "recharts": "^2.12.0",
+    "jsonwebtoken": "^9.0.2",
+    "canvas-confetti": "^1.9.3"
+  },
+  "devDependencies": {
+    "typescript": "5.4.5",
+    "@types/node": "20.11.30",
+    "@types/react": "18.2.66",
+    "tailwindcss": "3.4.3",
+    "postcss": "8.4.38",
+    "autoprefixer": "10.4.19"
+  }
+}
