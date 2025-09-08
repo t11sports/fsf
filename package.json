@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "postinstall": "if [ -f prisma/schema.prisma ]; then prisma generate; fi"
+    "postinstall": "prisma generate --schema=prisma/schema.prisma",
     "vercel:build": "prisma migrate deploy --schema=prisma/schema.prisma && prisma generate --schema=prisma/schema.prisma && next build"
   },
   "dependencies": {
