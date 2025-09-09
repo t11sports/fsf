@@ -1,5 +1,3 @@
-'use client';
-
 import { NextResponse } from "next/server"; import { PrismaClient } from "@prisma/client"; const prisma = new PrismaClient();
 function row(fields:(string|number|null|undefined)[]){ return fields.map(v=>{ const s = v==null ? '' : String(v); return (s.includes(',')||s.includes('"')||s.includes('\n')) ? '"'+s.replace(/"/g,'""')+'"' : s; }).join(','); }
 export const dynamic = 'force-dynamic'; // ⛔️ disable static generation
