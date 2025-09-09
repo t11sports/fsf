@@ -1,5 +1,5 @@
 # Dockerfile
-FROM node:18-slim
+FROM node:18-slim AS builder
 
 # Install required packages including OpenSSL 1.1
 RUN apt-get update && apt-get install -y openssl libssl1.1 ca-certificates
