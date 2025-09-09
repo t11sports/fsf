@@ -1,4 +1,17 @@
 
-import { NextResponse } from "next/server"; import { PrismaClient } from "@prisma/client"; const prisma = new PrismaClient();
-function row(fields:(string|number|null|undefined)[]){ return fields.map(v=>{ const s = v==null ? '' : String(v); return (s.includes(',')||s.includes('"')||s.includes('\n')) ? '"'+s.replace(/"/g,'""')+'"' : s; }).join(','); }
-export async function GET(){ const winners = await prisma.winner.findMany({ include: { player: true, game: true }, orderBy: { createdAt: "asc" } }); const header = ["GameId","Week","Date","Board","Quarter","Square","Player","Payout"]; const rows = winners.map(w=>[w.gameId, (w as any).game?.week ?? "", (w as any).game?.date?.toISOString?.()?.slice(0,10) ?? "", w.boardNumber ?? "", w.quarter, w.square, (w as any).player?.name ?? "", w.payout ?? 0 ]); const csv = [row(header), ...rows.map(row)].join('\n'); return new NextResponse(csv, { headers: { "Content-Type":"text/csv", "Content-Disposition": 'attachment; filename="winners.csv"' } }); }
+import { NextResponse } 
+  from "next/server"; 
+import { PrismaClient } 
+  from "@prisma/client"; 
+const prisma = new PrismaClient();
+function row(fields:(string|number|null|undefined)[]){ return fields.map(v=>{ 
+  const s = v==null ? '' : String(v); 
+  return (s.includes(',')||s.includes('"')||s.includes('\n')) ? '"'+s.replace(/"/g,'""')+'"' : s; }).join(','); }
+export const dynamic = 'force-dynamic'; // ⛔️ disable static generation
+export async function GET(req: Request) {
+  // Prisma code...
+  const winners = await prisma.winner.findMany({ 
+    include: { player: true, game: true }, orderBy: { createdAt: "asc" } }); 
+  const header = ["GameId","Week","Date","Board","Quarter","Square","Player","Payout"]; 
+  const rows = winners.map(w=>[w.gameId, (w as any).game?.week ?? "", (w as any).game?.date?.toISOString?.()?.slice(0,10) ?? "", w.boardNumber ?? "", w.quarter, w.square, (w as any).player?.name ?? "", w.payout ?? 0 ]); 
+  const csv = [row(header), ...rows.map(row)].join('\n'); return new NextResponse(csv, { headers: { "Content-Type":"text/csv", "Content-Disposition": 'attachment; filename="winners.csv"' } }); }
