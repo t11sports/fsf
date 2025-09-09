@@ -3,7 +3,9 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function GET() {
+export const dynamic = 'force-dynamic'; // ⛔️ disable static generation
+export async function GET(req: Request) {
+  // Prisma code...
   try {
     const [playersCount, buyersCount, gamesCount, sales] = await Promise.all([
       prisma.player.count(),
