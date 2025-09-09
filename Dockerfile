@@ -4,16 +4,17 @@ WORKDIR /app
 
 ENV SKIP_ENV_VALIDATION=1
 
-# Copy entire app (including prisma directory and schema)
-COPY . .
+# Install dependencies in two steps to optimize Docker cache
+COPY package.json package-lock.json* ./
+RUN npm ci
 
-# Install dependencies
-RUN npm install
+# Copy all project files after installing node_modules
+COPY . .
 
 # Generate Prisma client AFTER schema is copied
 RUN npx prisma generate
 
-# Build Next.js app
+# Build Next.js app (includes TypeScript checks)
 RUN npm run build
 
 # ---- Runner ----
@@ -24,7 +25,7 @@ ENV NODE_ENV=production
 # Install openssl (needed for Prisma in Alpine)
 RUN apk add --no-cache openssl
 
-# Copy only needed files from builder
+# Only copy production dependencies
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/.next ./.next
@@ -32,6 +33,6 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/.env.example ./.env.example
 
-# Expose port and start
+# Expose port and run migration + start server
 EXPOSE 3000
 CMD ["sh", "-c", "npx prisma migrate deploy && node node_modules/.bin/next start -p 3000"]
