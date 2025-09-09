@@ -1,5 +1,5 @@
 # Dockerfile
-FROM node:18-slim AS builder
+FROM node:20-alpine AS builder
 
 # Install required packages (no libssl1.1)
 RUN apt-get update && apt-get install -y \
@@ -11,6 +11,9 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
+# Ensure openssl is available (for Prisma)
+RUN apk add --no-cache openssl1.1
+
 ENV SKIP_ENV_VALIDATION=1
 
 # Install dependencies in two steps to optimize Docker cache
@@ -19,6 +22,9 @@ RUN npm install
 
 # Now copy the rest of the project
 COPY . .
+
+# Dummy DATABASE_URL to prevent Prisma crash during build
+ENV DATABASE_URL="postgresql://user:pass@localhost:5432/db"
 
 # Prisma client generation AFTER schema is copied
 RUN npx prisma generate
