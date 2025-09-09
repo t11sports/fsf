@@ -1,5 +1,10 @@
-# ---- Builder ----
-FROM node:20-alpine AS builder
+# Dockerfile
+FROM node:18-slim
+
+# Install required packages including OpenSSL 1.1
+RUN apt-get update && apt-get install -y openssl libssl1.1 ca-certificates
+
+# Set working directory
 WORKDIR /app
 
 ENV SKIP_ENV_VALIDATION=1
@@ -16,6 +21,9 @@ RUN npx prisma generate
 
 # Build Next.js app (includes TypeScript checks)
 RUN npm run build
+
+# Run app
+CMD ["npm", "start"]
 
 # ---- Runner ----
 FROM node:20-alpine AS runner
