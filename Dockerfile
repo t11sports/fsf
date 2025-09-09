@@ -28,6 +28,9 @@ COPY . .
 # Prisma client generation AFTER schema is copied
 RUN npx prisma generate
 
+# Copy env early so it's available during build
+COPY .env .env
+
 # Build Next.js app (includes TypeScript checks)
 RUN npm run build
 
