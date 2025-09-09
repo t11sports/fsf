@@ -1,7 +1,9 @@
 
 import { NextResponse } from "next/server";
 import fs from "fs"; import path from "path";
-export async function GET(){
+export const dynamic = 'force-dynamic'; // ⛔️ disable static generation
+export async function GET(req: Request) {
+  // Prisma code...
   const dir = path.join(process.cwd(), "data", "import-presets");
   try {
     const files = fs.readdirSync(dir).filter(f=>f.endsWith(".json"));
