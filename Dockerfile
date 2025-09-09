@@ -1,9 +1,13 @@
 # Dockerfile
 FROM node:18-slim AS builder
 
-# Install required packages including OpenSSL 1.1
-RUN apt-get update && apt-get install -y openssl libssl1.1 ca-certificates
-
+# Install required packages (no libssl1.1)
+RUN apt-get update && apt-get install -y \
+    openssl \
+    libssl-dev \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+    
 # Set working directory
 WORKDIR /app
 
