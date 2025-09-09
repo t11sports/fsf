@@ -6,7 +6,7 @@ ENV SKIP_ENV_VALIDATION=1
 
 # Install dependencies in two steps to optimize Docker cache
 COPY package.json package-lock.json* ./
-RUN npm ci
+RUN npm install
 
 # Copy all project files after installing node_modules
 COPY . .
