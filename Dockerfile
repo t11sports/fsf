@@ -1,19 +1,18 @@
 # Dockerfile
-FROM node:20-alpine AS builder
+FROM node:18-slim AS builder
 
-# Install required packages (no libssl1.1)
-RUN apt-get update && apt-get install -y \
-    openssl \
-    libssl-dev \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+# Install required dependencies (OpenSSL & libssl-dev)
+RUN apt-get update && \
+    apt-get install -y openssl libssl-dev ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
     
 # Set working directory
 WORKDIR /app
 
 # Ensure openssl is available (for Prisma)
-RUN apk add --no-cache openssl1.1
+# RUN apk add --no-cache openssl1.1
 
+# Environment: skip .env validation during build
 ENV SKIP_ENV_VALIDATION=1
 
 # Install dependencies in two steps to optimize Docker cache
@@ -24,7 +23,7 @@ RUN npm install
 COPY . .
 
 # Dummy DATABASE_URL to prevent Prisma crash during build
-ENV DATABASE_URL="postgresql://user:pass@localhost:5432/db"
+# ENV DATABASE_URL="postgresql://user:pass@localhost:5432/db"
 
 # Prisma client generation AFTER schema is copied
 RUN npx prisma generate
@@ -33,15 +32,16 @@ RUN npx prisma generate
 RUN npm run build
 
 # Run app
-CMD ["npm", "start"]
+#CMD ["npm", "start"]
 
 # ---- Runner ----
-FROM node:20-alpine AS runner
-WORKDIR /app
-ENV NODE_ENV=production
+FROM node:18-alpine AS runner
 
 # Install openssl (required by Prisma for Alpine)
 RUN apk add --no-cache openssl
+
+# WORKDIR /app
+ ENV NODE_ENV=production
 
 # Copy only the necessary build output and runtime files
 COPY --from=builder /app/node_modules ./node_modules
@@ -55,4 +55,5 @@ COPY --from=builder /app/.env.example ./.env.example
 EXPOSE 3000
 
 # Final command: run Prisma migrations, then start the app
-CMD ["sh", "-c", "npx prisma migrate deploy && node node_modules/.bin/next start -p 3000"]
+#CMD ["sh", "-c", "npx prisma migrate deploy && node node_modules/.bin/next start -p 3000"]
+CMD ["sh", "-c", "npx prisma migrate deploy && npm start"]
