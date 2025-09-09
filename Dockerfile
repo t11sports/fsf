@@ -8,10 +8,10 @@ ENV SKIP_ENV_VALIDATION=1
 COPY package.json package-lock.json* ./
 RUN npm install
 
-# Copy all project files after installing node_modules
+# Now copy the rest of the project
 COPY . .
 
-# Generate Prisma client AFTER schema is copied
+# Prisma client generation AFTER schema is copied
 RUN npx prisma generate
 
 # Build Next.js app (includes TypeScript checks)
@@ -22,10 +22,10 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
-# Install openssl (needed for Prisma in Alpine)
+# Install openssl (required by Prisma for Alpine)
 RUN apk add --no-cache openssl
 
-# Only copy production dependencies
+# Copy only the necessary build output and runtime files
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/.next ./.next
@@ -33,6 +33,8 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/.env.example ./.env.example
 
-# Expose port and run migration + start server
+# Expose the port
 EXPOSE 3000
+
+# Final command: run Prisma migrations, then start the app
 CMD ["sh", "-c", "npx prisma migrate deploy && node node_modules/.bin/next start -p 3000"]
