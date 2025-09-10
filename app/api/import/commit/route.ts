@@ -1,6 +1,6 @@
 // app/api/import/commit/route.ts
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     sales = 0,
     players = 0;
 
-  await prisma.$transaction(async (px) => {
+  await prisma.$transaction(async (px: Prisma.TransactionClient) => {
     for (const r of rows) {
       // Add Player
       if (mapping?.players?.name && r[mapping.players.name]) {
