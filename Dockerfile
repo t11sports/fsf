@@ -53,7 +53,7 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/.env.example ./.env.example
-COPY --from=builder /app/.env ./.env
+#COPY --from=builder /app/.env ./.env
 
 # Expose the port
 EXPOSE 3000
