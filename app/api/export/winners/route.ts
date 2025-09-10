@@ -34,16 +34,15 @@ export async function GET(req: Request) {
     "Payout",
   ];
 
-  const rows = winners.map((s) => [
-  s.id,
-  s.createdAt.toISOString().slice(0, 10),
-  s.buyer?.name ?? "",
-  s.player?.name ?? "",
-  s.qty ?? 0,
-  s.due ?? 0,
-  s.received ?? 0,
-  s.balance ?? 0,
-  s.note ?? "",
+  const rows = winners.map((w) => [
+    w.gameId,
+    w.game?.week ?? "",
+    w.game?.date?.toISOString?.().slice(0, 10) ?? "",
+    w.boardNumber ?? "",
+    w.quarter,
+    w.square,
+    w.player?.name ?? "",
+    w.payout ?? 0,
 ]);
   
   const csv = [row(header), ...rows.map(row)].join("\n");
