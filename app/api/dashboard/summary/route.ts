@@ -1,37 +1,60 @@
-import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { NextResponse } from "next/server";
+import { PrismaClient, Sale } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const dynamic = 'force-dynamic'; // ⛔️ disable static generation
+function row(fields: (string | number | null | undefined)[]) {
+  return fields.map((v) => {
+    const s = v == null ? "" : String(v);
+    return s.includes(",") || s.includes('"') || s.includes("\n")
+      ? '"' + s.replace(/"/g, '""') + '"'
+      : s;
+  }).join(",");
+}
+
+export const dynamic = "force-dynamic"; // ⛔️ disable static generation
 
 export async function GET(req: Request) {
-  // Prisma code...
-  try {
-    const [playersCount, buyersCount, gamesCount, sales] = await Promise.all([
-      prisma.player.count(),
-      prisma.buyer.count(),
-      prisma.game.count(),
-      prisma.sale.findMany(),
-    ]);
+  const sales = await prisma.sale.findMany({
+    include: {
+      buyer: true,
+      player: true,
+    },
+  });
 
-    // Explicitly define type for sales
-    const totalDue = sales.reduce((sum: number, sale: typeof sales[number]) => sum + (sale.due ?? 0), 0);
-    const totalReceived = sales.reduce((sum: number, sale: typeof sales[number]) => sum + (sale.received ?? 0), 0);
-    const totalBalance = sales.reduce((sum: number, sale: typeof sales[number]) => sum + (sale.balance ?? 0), 0);
+  const header = [
+    "SaleId",
+    "Date",
+    "Buyer",
+    "Player",
+    "Qty",
+    "Due",
+    "Received",
+    "Balance",
+    "Note",
+  ];
 
-    const kpis = {
-      Players: playersCount,
-      Buyers: buyersCount,
-      Games: gamesCount,
-      'Total Due ($)': totalDue,
-      'Total Received ($)': totalReceived,
-      'Total Balance ($)': totalBalance,
-    };
+  const rows = sales.map((s: Sale & {
+    buyer?: { name?: string } | null;
+    player?: { name?: string } | null;
+  }) => [
+    s.id,
+    s.createdAt.toISOString().slice(0, 10),
+    s.buyer?.name ?? "",
+    s.player?.name ?? "",
+    s.qty ?? 0,
+    s.due ?? 0,
+    s.received ?? 0,
+    s.balance ?? 0,
+    s.note ?? "",
+  ]);
 
-    return NextResponse.json({ kpis });
-  } catch (error) {
-    console.error('Summary API Error:', error);
-    return new NextResponse('Internal Server Error', { status: 500 });
-  }
+  const csv = [row(header), ...rows.map(row)].join("\n");
+
+  return new NextResponse(csv, {
+    headers: {
+      "Content-Type": "text/csv",
+      "Content-Disposition": 'attachment; filename="sales.csv"',
+    },
+  });
 }
