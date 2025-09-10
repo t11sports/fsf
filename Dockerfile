@@ -31,7 +31,7 @@ COPY . .
 # ENV DATABASE_URL="postgresql://user:pass@localhost:5432/db"
 
 # Prisma client generation AFTER schema is copied
-# RUN npx prisma generate
+RUN npx prisma generate
 
 # Copy env early so it's available during build
 #COPY .env .env
@@ -49,15 +49,18 @@ FROM node:18-alpine AS runner
 RUN apk add --no-cache openssl
 
 # WORKDIR /app
- ENV NODE_ENV=production
+ENV NODE_ENV=production
+WORKDIR /app
 
 # Copy only the necessary build output and runtime files
-COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/.env.example ./.env.example
+COPY --from=builder /app/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 #COPY --from=builder /app/.env ./.env
 
 # Expose the port
