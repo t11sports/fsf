@@ -11,7 +11,8 @@ WORKDIR /app
 
 # Set environment variable ONLY for build time
 ARG DATABASE_URL
-ENV DATABASE_URL=$DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
+RUN echo "DATABASE_URL=${DATABASE_URL}" > .env
 
 # Ensure openssl is available (for Prisma)
 # RUN apk add --no-cache openssl1.1
