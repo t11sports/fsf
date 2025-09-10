@@ -1,7 +1,7 @@
 node_modules
 .next/cache
-.env
-.env.*
+#.env
+#.env.*
 *.log
 docker-compose.yml
 coverage
