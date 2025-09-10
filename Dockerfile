@@ -9,6 +9,10 @@ RUN apt-get update && \
 # Set working directory
 WORKDIR /app
 
+# Set environment variable ONLY for build time
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
+
 # Ensure openssl is available (for Prisma)
 # RUN apk add --no-cache openssl1.1
 
