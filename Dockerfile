@@ -31,7 +31,7 @@ COPY . .
 # ENV DATABASE_URL="postgresql://user:pass@localhost:5432/db"
 
 # Prisma client generation AFTER schema is copied
-RUN npx prisma generate
+# RUN npx prisma generate
 
 # Copy env early so it's available during build
 #COPY .env .env
