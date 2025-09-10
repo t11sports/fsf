@@ -34,30 +34,18 @@ export async function GET(req: Request) {
     "Note",
   ];
 
-  const rows = sales.map((
-    s: {
-      id: number;
-      createdAt: Date;
-      qty: number | null;
-      due: number;
-      received: number;
-      balance: number;
-      note?: string | null;
-      buyer?: { name?: string | null } | null;
-      player?: { name?: string | null } | null;
-    }
-  ) => [
-    s.id,
-    s.createdAt.toISOString().slice(0, 10),
-    s.buyer?.name ?? "",
-    s.player?.name ?? "",
-    s.qty ?? 0,
-    s.due ?? 0,
-    s.received ?? 0,
-    s.balance ?? 0,
-    s.note ?? "",
-  ]);
-
+const rows = sales.map((s) => [
+  s.id,
+  s.createdAt.toISOString().slice(0, 10),
+  s.buyer?.name ?? "",
+  s.player?.name ?? "",
+  s.qty ?? 0,
+  s.due ?? 0,
+  s.received ?? 0,
+  s.balance ?? 0,
+  s.note ?? "",
+]);
+  
   const csv = [row(header), ...rows.map(row)].join("\n");
 
   return new NextResponse(csv, {
