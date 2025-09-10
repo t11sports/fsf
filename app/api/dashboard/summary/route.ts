@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { PrismaClient, Sale } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -34,10 +34,19 @@ export async function GET(req: Request) {
     "Note",
   ];
 
-  const rows = sales.map((s: Sale & {
-    buyer?: { name?: string } | null;
-    player?: { name?: string } | null;
-  }) => [
+  const rows = sales.map((
+    s: {
+      id: number;
+      createdAt: Date;
+      qty: number | null;
+      due: number;
+      received: number;
+      balance: number;
+      note?: string | null;
+      buyer?: { name?: string | null } | null;
+      player?: { name?: string | null } | null;
+    }
+  ) => [
     s.id,
     s.createdAt.toISOString().slice(0, 10),
     s.buyer?.name ?? "",
