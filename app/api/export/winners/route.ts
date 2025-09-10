@@ -34,7 +34,17 @@ export async function GET(req: Request) {
     "Payout",
   ];
 
-  const rows = winners.map((w) => [
+  const rows = winners.map((
+    w: {
+      gameId: number;
+      boardNumber: number | null;
+      quarter: number;
+      square: number;
+      payout: number | null;
+      player?: { name?: string | null } | null;
+      game?: { week?: string | null; date?: Date | null } | null;
+    }
+  ) => [
     w.gameId,
     w.game?.week ?? "",
     w.game?.date?.toISOString?.().slice(0, 10) ?? "",
