@@ -1,68 +1,50 @@
-# Dockerfile
+# ---- Builder ----
 FROM node:18-slim AS builder
 
-# Install required dependencies (OpenSSL & libssl-dev)
-RUN apt-get update && \
-    apt-get install -y openssl libssl-dev ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-    
-# Set working directory
+# Install required dependencies (OpenSSL for Prisma)
+RUN apt-get update && apt-get install -y openssl libssl-dev ca-certificates && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
-# Set environment variable ONLY for build time
-ARG DATABASE_URL
-ENV DATABASE_URL=${DATABASE_URL}
-RUN echo "DATABASE_URL=${DATABASE_URL}" > .env
-
-# Ensure openssl is available (for Prisma)
-# RUN apk add --no-cache openssl1.1
-
-# Environment: skip .env validation during build
-ENV SKIP_ENV_VALIDATION=1
-
-# Install dependencies in two steps to optimize Docker cache
+# Copy only package files first to leverage Docker layer caching
 COPY package.json package-lock.json* ./
-RUN npm install
 
-# Now copy the rest of the project
+# Install dependencies
+RUN npm ci
+
+# Copy rest of the project files
 COPY . .
 
-# Dummy DATABASE_URL to prevent Prisma crash during build
-# ENV DATABASE_URL="postgresql://user:pass@localhost:5432/db"
+# Skip validation for .env presence
+ENV SKIP_ENV_VALIDATION=1
 
-# Prisma client generation AFTER schema is copied
+# Generate Prisma client (requires DATABASE_URL at runtime, not build)
 RUN npx prisma generate
 
-# Copy env early so it's available during build
-#COPY .env .env
-
-# Build Next.js app (includes TypeScript checks)
+# Build Next.js (uses types, does not execute Prisma migrations yet)
 RUN npm run build
-
-# Run app
-#CMD ["npm", "start"]
 
 # ---- Runner ----
 FROM node:18-alpine AS runner
 
-# Install openssl (required by Prisma for Alpine)
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+# Install OpenSSL (needed for Prisma in Alpine)
 RUN apk add --no-cache openssl
 
-# WORKDIR /app
- ENV NODE_ENV=production
-
-# Copy only the necessary build output and runtime files
+# Copy only necessary runtime artifacts
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/.env.example ./.env.example
-#COPY --from=builder /app/.env ./.env
 
-# Expose the port
+# Use .env from Render's environment injection, not during build
+# Do NOT copy .env or .env.example (Render sets vars automatically)
+
 EXPOSE 3000
 
-# Final command: run Prisma migrations, then start the app
-#CMD ["sh", "-c", "npx prisma migrate deploy && node node_modules/.bin/next start -p 3000"]
+# Run migration before starting app
 CMD ["sh", "-c", "npx prisma migrate deploy && npm start"]
