@@ -14,9 +14,9 @@ export async function GET(req: Request) {
       prisma.sale.findMany(),
     ]);
 
-    const totalDue = sales.reduce((sum, sale) => sum + sale.due, 0);
-    const totalReceived = sales.reduce((sum, sale) => sum + sale.received, 0);
-    const totalBalance = sales.reduce((sum, sale) => sum + sale.balance, 0);
+      const totalDue = sales.reduce((sum: number, sale) => sum + sale.due, 0);
+      const totalReceived = sales.reduce((sum: number, sale) => sum + sale.received, 0);
+      const totalBalance = sales.reduce((sum: number, sale) => sum + sale.balance, 0);
 
     const kpis = {
       Players: playersCount,
