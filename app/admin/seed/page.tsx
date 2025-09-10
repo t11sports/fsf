@@ -1,3 +1,5 @@
+'use client';
+
 export default function SeedPage(){ async function seedDemo(){ const r=await fetch('/api/admin/seed/demo',{method:'POST'}); if(!r.ok){ alert('Unauthorized or failed'); return; } const j=await r.json(); alert('Seeded demo! Game: '+j.gameId); } return (<div className='space-y-4 max-w-md'><h1 className='text-2xl font-bold'>Admin · Seed Demo</h1><p className='opacity-70 text-sm'>Creates sample players, buyers, sales, a game with two boards, and a couple of winners.</p><button onClick={seedDemo} className='px-4 py-2 bg-black text-white rounded'>Seed demo data</button>
   <div className="p-4 border rounded bg-white space-y-3">
     <h2 className="font-semibold">Seed 2025 Monday Night Football Schedule</h2>
