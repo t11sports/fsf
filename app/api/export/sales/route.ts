@@ -33,19 +33,17 @@ export async function GET(req: Request) {
     "Note",
   ];
 
-  const rows = sales.map((
-    s: {
-      id: number;
-      createdAt: Date;
-      qty: number | null;
-      due: number;
-      received: number;
-      balance: number;
-      note?: string | null;
-      buyer?: { name?: string | null } | null;
-      player?: { name?: string | null } | null;
-    }
-  ) => [
+  const rows = sales.map((s: {
+    id: string; // ← this is string, not number
+    createdAt: Date;
+    qty: number | null;
+    due: number;
+    received: number;
+    balance: number;
+    note?: string | null;
+    buyer?: { name?: string | null } | null;
+    player?: { name?: string | null } | null;
+  }) => [
     s.id,
     s.createdAt.toISOString().slice(0, 10),
     s.buyer?.name ?? "",
