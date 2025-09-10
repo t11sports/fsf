@@ -5,6 +5,7 @@ services:
     plan: basic-256
 
     buildCommand: |
+      echo "DATABASE_URL=$DATABASE_URL" > .env
       npm ci
       npx prisma generate
       npm run build
@@ -15,7 +16,7 @@ services:
 
     envVars:
       - key: DATABASE_URL
-        fromDatabase: fsf
+        fromDatabase: mnf-db
         name: postgres
 
       - key: APP_JWT_SECRET
