@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export const dynamic = 'force-dynamic'; // ⛔️ disable static generation
+
 export async function GET(req: Request) {
   // Prisma code...
   try {
@@ -14,11 +15,10 @@ export async function GET(req: Request) {
       prisma.sale.findMany(),
     ]);
 
-      type Sale = { due: number, received: number, balance: number };
-
-      const totalDue = sales.reduce((sum: number, sale: Sale) => sum + sale.due, 0);
-      const totalReceived = sales.reduce((sum: number, sale: Sale) => sum + sale.received, 0);
-      const totalBalance = sales.reduce((sum: number, sale: Sale) => sum + sale.balance, 0);
+    // Explicitly define type for sales
+    const totalDue = sales.reduce((sum: number, sale: typeof sales[number]) => sum + (sale.due ?? 0), 0);
+    const totalReceived = sales.reduce((sum: number, sale: typeof sales[number]) => sum + (sale.received ?? 0), 0);
+    const totalBalance = sales.reduce((sum: number, sale: typeof sales[number]) => sum + (sale.balance ?? 0), 0);
 
     const kpis = {
       Players: playersCount,
