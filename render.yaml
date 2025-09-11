@@ -2,7 +2,7 @@ services:
   - type: web
     name: fsf
     env: node
-    plan: hobby
+    plan: free
 
     buildCommand: |
       echo "DATABASE_URL=$DATABASE_URL" > .env
@@ -30,4 +30,4 @@ services:
 
 databases:
   - name: fsf-db
-    plan: hobby
+    plan: starter
