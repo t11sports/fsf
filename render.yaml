@@ -16,8 +16,8 @@ services:
 
     envVars:
       - key: DATABASE_URL
-        fromDatabase: fsf-db
-
+        fromDatabase:
+          name: fsf-db
       - key: APP_JWT_SECRET
         generateValue: true
  
