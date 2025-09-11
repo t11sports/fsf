@@ -16,7 +16,8 @@ services:
 
     envVars:
       - key: DATABASE_URL
-        fromDatabase: mnf-db
+        #fromDatabase: mnf-db
+        fromDatabase: t11sports-db
         name: postgres
 
       - key: APP_JWT_SECRET
