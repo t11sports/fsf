@@ -16,9 +16,8 @@ services:
 
     envVars:
       - key: DATABASE_URL
-        #fromDatabase: mnf-db
         fromDatabase: fsf-db
-        name: postgres
+        #name: postgres
 
       - key: APP_JWT_SECRET
         generateValue: true
