@@ -24,7 +24,8 @@ services:
         generateValue: true
 
       - key: NEXTAUTH_URL
-        value: https://your-render-url.onrender.com
+        #value: https://your-render-url.onrender.com
+        value: https://t11sports.onrender.com
 
       - key: SQUARE_PRICE_CENTS
         value: "2000"
