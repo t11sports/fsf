@@ -17,13 +17,11 @@ services:
     envVars:
       - key: DATABASE_URL
         fromDatabase: fsf-db
-        #name: postgres
 
       - key: APP_JWT_SECRET
         generateValue: true
-
+ 
       - key: NEXTAUTH_URL
-        #value: https://your-render-url.onrender.com
         value: https://t11sports.onrender.com
 
       - key: SQUARE_PRICE_CENTS
