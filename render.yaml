@@ -6,7 +6,7 @@ services:
 
     buildCommand: |
       echo "DATABASE_URL=$DATABASE_URL" > .env
-      npm ci
+      npm install
       npx prisma generate
       npm run build
 
