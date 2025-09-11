@@ -30,4 +30,4 @@ services:
 
 databases:
   - name: fsf-db
-    plan: professional
+    plan: basic-1gb
