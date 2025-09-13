@@ -1,9 +1,28 @@
 // app/admin/page.tsx
 "use client";
 
-import Link from "next/link";
+#import Link from "next/link";
+import { useEffect, useState } from "react";
+import DashboardSummary from "@/components/admin/DashboardSummary";
+import BuyersTable from "@/components/admin/BuyersTable";
+import PlayersTable from "@/components/admin/PlayersTable";
+import SalesTable from "@/components/admin/SalesTable";
+import WinnersTable from "@/components/admin/WinnersTable";
+import GamesTable from "@/components/admin/GamesTable";
 
-export default function AdminDashboard() {
+export default function AdminPage() {
+  const [auth, setAuth] = useState(false);
+
+  useEffect(() => {
+    const secret = prompt("Enter admin password:");
+    if (secret === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
+      setAuth(true);
+    } else {
+      alert("Unauthorized");
+    }
+  }, []);
+  
+"export default function AdminDashboard() {
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
