@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
+type Winner = {
+  game: string;
+  name: string;
+};
+
 const WinnersTable = () => {
-  const [winners, setWinners] = useState([]);
+  const [winners, setWinners] = useState<Winner[]>([]);
 
   useEffect(() => {
     axios.get('/api/winners').then(res => setWinners(res.data));
