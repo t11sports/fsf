@@ -1,9 +1,18 @@
 const DashboardSummary = () => {
+  const stats = [
+    { title: 'Total Sales', value: '$5,000' },
+    { title: 'Players', value: '120' },
+    { title: 'Games', value: '8' },
+  ];
+
   return (
-    <div className="grid grid-cols-3 gap-4">
-      <div className="bg-white p-4 rounded shadow">Total Sales: $5000</div>
-      <div className="bg-white p-4 rounded shadow">Players: 120</div>
-      <div className="bg-white p-4 rounded shadow">Games: 8</div>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {stats.map((stat, idx) => (
+        <div key={idx} className="bg-white rounded-xl shadow p-6 text-center">
+          <div className="text-sm text-gray-500">{stat.title}</div>
+          <div className="text-xl font-bold">{stat.value}</div>
+        </div>
+      ))}
     </div>
   );
 };
