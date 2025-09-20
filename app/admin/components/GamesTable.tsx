@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Game } from '@/lib/types'; // if you're using the shared types
 
 const GamesTable = () => {
-  const [games, setGames] = useState([]);
+  const [games, setGames] = useState<Game[]>([]);
 
   useEffect(() => {
     axios.get('/api/games').then(res => setGames(res.data));
