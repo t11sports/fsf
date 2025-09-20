@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Game } from '@/lib/types'; // if you're using the shared types
-
+type Game = {
+  week: number;
+  home: string;
+  away: string;
+  date: string;
+};
 const GamesTable = () => {
   const [games, setGames] = useState<Game[]>([]);
 
