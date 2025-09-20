@@ -1,17 +1,28 @@
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+
 const PlayersTable = () => {
+  const [players, setPlayers] = useState([]);
+
+  useEffect(() => {
+    axios.get('/api/players').then(res => setPlayers(res.data));
+  }, []);
+
   return (
-    <table className="w-full border mt-4">
-      <thead>
-        <tr className="bg-gray-100">
-          <th className="border p-2">Player</th>
-          <th className="border p-2">Status</th>
+    <table className="w-full mt-4 border text-sm">
+      <thead className="bg-gray-100">
+        <tr>
+          <th className="p-2 border">Player</th>
+          <th className="p-2 border">Status</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td className="border p-2">Player 1</td>
-          <td className="border p-2">Active</td>
-        </tr>
+        {players.map((player, idx) => (
+          <tr key={idx} className="hover:bg-gray-50">
+            <td className="p-2 border">{player.name}</td>
+            <td className="p-2 border">{player.status}</td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );
