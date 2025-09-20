@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Papa from 'papaparse';
 
 const ImportExport = () => {
-  const [csvData, setCsvData] = useState([]);
+  const [csvData, setCsvData] = useState<Record<string, string>[]>([]);
 
   const handleFile = (e) => {
     const file = e.target.files[0];
