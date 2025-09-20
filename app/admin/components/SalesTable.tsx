@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
+type Sale = {
+  date: string;
+  amount: number;
+};
+
 const SalesTable = () => {
-  const [sales, setSales] = useState([]);
+  const [sales, setSales] = useState<Sale[]>([]);
 
   useEffect(() => {
     axios.get('/api/sales').then(res => setSales(res.data));
