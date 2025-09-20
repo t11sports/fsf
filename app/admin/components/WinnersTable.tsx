@@ -1,17 +1,28 @@
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+
 const WinnersTable = () => {
+  const [winners, setWinners] = useState([]);
+
+  useEffect(() => {
+    axios.get('/api/winners').then(res => setWinners(res.data));
+  }, []);
+
   return (
-    <table className="w-full border mt-4">
-      <thead>
-        <tr className="bg-gray-100">
-          <th className="border p-2">Game</th>
-          <th className="border p-2">Winner</th>
+    <table className="w-full mt-4 border text-sm">
+      <thead className="bg-gray-100">
+        <tr>
+          <th className="p-2 border">Game</th>
+          <th className="p-2 border">Winner</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td className="border p-2">Week 1</td>
-          <td className="border p-2">John Doe</td>
-        </tr>
+        {winners.map((winner, idx) => (
+          <tr key={idx} className="hover:bg-gray-50">
+            <td className="p-2 border">{winner.game}</td>
+            <td className="p-2 border">{winner.name}</td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );
