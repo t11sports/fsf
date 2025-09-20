@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
+type Buyer = {
+  name: string;
+  email: string;
+};
+
 const BuyersTable = () => {
-  const [buyers, setBuyers] = useState([]);
+  const [buyers, setBuyers] = useState<Buyer[]>([]);
 
   useEffect(() => {
     axios.get('/api/buyers').then(res => setBuyers(res.data));
