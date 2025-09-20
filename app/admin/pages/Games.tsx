@@ -1,3 +1,12 @@
-const Games = () => 
-<div className="text-xl font-bold">Games Configuration</div>;
+import React from 'react';
+
+const Games = () => {
+  return (
+    <div>
+      <h1 className="text-2xl font-bold mb-4">Games Configuration</h1>
+      <p>Game setup and controls will appear here.</p>
+    </div>
+  );
+};
+
 export default Games;
