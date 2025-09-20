@@ -5,7 +5,7 @@ const Buyers = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await axios.post('/api/buyers', { name, email });
     setName('');
