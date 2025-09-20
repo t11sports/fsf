@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import DashboardSummary from "@/components/admin/DashboardSummary";
-import BuyersTable from "@/components/admin/BuyersTable";
-import PlayersTable from "@/components/admin/PlayersTable";
-import SalesTable from "@/components/admin/SalesTable";
-import WinnersTable from "@/components/admin/WinnersTable";
-import GamesTable from "@/components/admin/GamesTable";
+import DashboardSummary from "@/admin/components/DashboardSummary";
+import BuyersTable from "@/admin/components/BuyersTable";
+import PlayersTable from "@/admin/components/PlayersTable";
+import SalesTable from "@/admin/components/SalesTable";
+import WinnersTable from "@/admin/components/WinnersTable";
+import GamesTable from "@/admin/components/GamesTable";
 
 export default function AdminPage() {
   const [auth, setAuth] = useState(false);
